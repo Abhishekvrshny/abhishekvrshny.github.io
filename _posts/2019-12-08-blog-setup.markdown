@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Setting Up This Blog"
-date:   2018-12-08
+date:   2019-12-08
 ---
 
 <p class="intro"><span class="dropcap">I</span>t has been quite a while since I wanted to setup a personal vanity blog. Earlier I had tried setting this up using <a href="https://blog.getpelican.com/">Pelican</a>, but wasn't quite impressed by the themes available then, so thought of trying something else later. After 3.5 years, I am finally setting it up again using <a href="https://jekyllrb.com/">Jekyll</a> this time.</p>
