@@ -2,7 +2,7 @@
 layout: post
 title:  "Canary Deployment for Queue Workers"
 date:   2020-07-27
-description: Various strategies for canary deployment of queue workers and their pros and cons.
+description: In microservices, canary deployment is a pattern for rolling out releases to a subset of users or servers. This post covers various canary deployment strategies, specifically for queue workers, and their pros and cons.
 absolute_image: http://user-images.githubusercontent.com/12811812/88756371-1ca84e80-d181-11ea-86a4-cb90a6b272e3.png
 ---
 
