@@ -17,4 +17,4 @@ Jekyll is pretty straight forward to setup. The installation steps are given at 
 > bundle exec jekyll serve
 {% endhighlight %}
 
-The static website is generated at `_site/` directory, which I can easily copy to my gh-pages repo and it's done !
+The static website is generated at `_site/` directory. Github Pages have in-built integration with jekyll and once the jekyll repo is pushed to giyhub, it automatically renders the static website.
