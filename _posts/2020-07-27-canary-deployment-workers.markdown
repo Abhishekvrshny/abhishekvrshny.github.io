@@ -3,7 +3,7 @@ layout: post
 title:  "Canary Deployment for Queue Workers"
 date:   2020-07-27
 description: Various strategies for canary deployment of queue workers and their pros and cons.
-absolute_image: "https://user-images.githubusercontent.com/12811812/88756371-1ca84e80-d181-11ea-86a4-cb90a6b272e3.png"
+absolute_image: http://user-images.githubusercontent.com/12811812/88756371-1ca84e80-d181-11ea-86a4-cb90a6b272e3.png
 ---
 
 >Canaries were once regularly used in coal mining as an early warning system. Toxic gases such as carbon monoxide, methane or carbon dioxide in the mine would kill the bird before affecting the miners. Signs of distress from the bird indicated to the miners that conditions were unsafe.
