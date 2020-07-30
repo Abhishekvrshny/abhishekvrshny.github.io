@@ -26,3 +26,8 @@ social:
   email: abhishekvrshny@gmail.com
 
 google_analytics: "UA-173912916-1"
+
+disqus:
+  shortname: varloglog
+
+comments: true
