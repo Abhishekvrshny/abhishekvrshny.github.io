@@ -20,11 +20,11 @@ So, let me try to present a simplistic version of the problem. Let's assume ther
 
 Before I answer valid or not valid, let's see if this question has been raised elsewhere.
 
-1. **golang `net/http`**: There is a similar issue raised on golang's `net/http` package. https://github.com/golang/go/issues/23427
-2. **`square/okhttp`**: Again similar issue with some discussions. https://github.com/square/okhttp/issues/3374
-3. **`akka/akka-http`**: https://github.com/akka/akka-http/issues/1226
-4. **`pgbouncer/pgbouncer`**:A PostgreSQL connection pooler has similar issue reported. https://github.com/pgbouncer/pgbouncer/issues/383
-5. **cURL**: A good discussion in `cURL`'s mailing list. https://curl.haxx.se/mail/lib-2017-06/0021.html
+1. **golang `net/http`**: There is a similar issue raised on golang's `net/http` package. [https://github.com/golang/go/issues/23427](https://github.com/golang/go/issues/23427)
+2. **`square/okhttp`**: Again similar issue with some discussions. [https://github.com/square/okhttp/issues/3374](https://github.com/square/okhttp/issues/3374)
+3. **`akka/akka-http`**: [https://github.com/akka/akka-http/issues/1226](https://github.com/akka/akka-http/issues/1226)
+4. **`pgbouncer/pgbouncer`**:A PostgreSQL connection pooler has similar issue reported. [https://github.com/pgbouncer/pgbouncer/issues/383](https://github.com/pgbouncer/pgbouncer/issues/383)
+5. **cURL**: A good discussion in `cURL`'s mailing list. [https://curl.haxx.se/mail/lib-2017-06/0021.html](https://curl.haxx.se/mail/lib-2017-06/0021.html)
 
 Going through the discussions on these threads and mailing lists, there are two things which are clear:
 
@@ -125,7 +125,7 @@ The case of http2 is again not very different and it's still the responsibility 
 
 > The 421 (Misdirected Request) status code indicates that the request was directed at a server that is not able to produce a response. This can be sent by a server that is not configured to produce responses for the combination of scheme and authority that are included in the request URI. Clients receiving a 421 (Misdirected Request) response from a server MAY retry the request -- whether the request method is idempotent or not -- over a different connection.
 
-The 421 status code can be used to force clients to connect over a different connection, but this again puts the onus on the resource server to start sending 421 once it's out of rotation. I am not very sure if this is the right use of this status code and I haven't come across any implementations of this either. Also, is the client expected to terminate the existing connection if it receives a 421 is not clear to me. `golang` http2 client still doesn't support 421. Some discussions here: https://github.com/golang/go/issues/18341. 
+The 421 status code can be used to force clients to connect over a different connection, but this again puts the onus on the resource server to start sending 421 once it's out of rotation. I am not very sure if this is the right use of this status code and I haven't come across any implementations of this either. Also, is the client expected to terminate the existing connection if it receives a 421 is not clear to me. `golang` http2 client still doesn't support 421. Some discussions here: [https://github.com/golang/go/issues/18341](https://github.com/golang/go/issues/18341).
 
 #### Summary
 
