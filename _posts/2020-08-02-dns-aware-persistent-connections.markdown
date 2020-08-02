@@ -67,7 +67,7 @@ func main() {
 				log.Printf("Failed to do request: %v", err)
 				continue
 			}
-
+	
 			io.Copy(ioutil.Discard, resp.Body)
 			resp.Body.Close()
 			log.Printf("resp status: %v", resp.Status)
@@ -112,29 +112,53 @@ This is because:
 1. DNS resolved IPs corresponding to a domain or a sub domain can change due to variety of reasons, like, load balancer rotating IPs, weighted DNS entries etc. and not every time the older IPs may stop working.
 2. The way http connection works is by resolving the DNS IPs before establishing connections to those IPs. DNS never comes into picture once a connection has been established and is `kept alive`.
 
-#### But I would still want to handle this at my client.
+#### Where do load balancers fit into the picture here?
 
-There is a partial solution available in some languages/frameworks which can help mitigate this if you still need to handle it at the client. The `ESTABLISHED` connections can be limited by time (as done by [akka-http](https://doc.akka.io/docs/akka-http/current/common/timeouts.html#connection-lifetime-timeout) for example) or they can be limited by number of requests (as done by [envoy](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/cluster.proto) for example)
+With load balancers, there can be 2 scenarios:
 
-> So far so good, but what if the resolved IP is that of a load balancer? How would load balancer terminate the connections?
+1. The application resolves to 2 different load balancers through DNS. 
+2. The application just connects to 1 load balancer but the load balancer in turn uses DNS to resolve to multiple resource servers.
 
-The answer still remains the same. You can have any number of proxies in between your client and the resource server, for eg, load balancers, k8s ingress controllers etc. It's always the responsibility of the resource server or any layer above it to terminate connections to force re-connects. The resource server terminating the connection is propagated to the clients because there always exists one to one mapping of connections from clients to load balancers and load balancers to resource servers in http1.
+The solution still remains the same in both the scenarios. You can have any number of proxies in between your client and the resource server, for eg, load balancers, k8s ingress controllers etc. It's always the responsibility of the resource server or any layer above it to terminate connections to force re-connects. The resource server terminating the connection is propagated to the clients because there always exists one to one mapping of connections from clients to load balancers and load balancers to resource servers in http1.
 
-> What happens in case of http2?
+In scenario 1, the decision to drain and terminate connections can be taken by all the resource servers or the load balancer itself.
 
-The case of http2 is again not very different and it's still the responsibility of the resource servers to terminate connections. One the connections are terminated the http2 proxy or load balancer can establish new connections after resolving DNS. But http2 has an interesting status code i.e 421 Misdirect Request. Lets talk more about it.
+#### What about http2?
 
-#### The 421 (Misdirected Request) Status Code
+With multiplexing in http2, the problem becomes more prominent and this brings a different perspective to the problem. Let's talk a little about L7 http2 load balancers, [envoy](https://www.envoyproxy.io/) for example. By the way, there is a good [blog post](https://blog.envoyproxy.io/introduction-to-modern-network-load-balancing-and-proxying-a57f6ff80236) by envoy on modern load balancers. 
 
-[Section 9.1.2 of RFC 7540](https://tools.ietf.org/html/rfc7540#section-9.1.2) describes 421 (Misdirected Request) as
+#### `Strict DNS` based service discovery in envoy
+
+Envoy supports two modes of DNS based [service discovery](https://www.envoyproxy.io/docs/envoy/latest/intro/arch_overview/upstream/service_discovery), `logical DNS` and `strict DNS`. With both these modes, envoy always does async DNS resolution for zero DNS blocking in the forwarding path, which is indeed a good optimisation. But the difference between strict and logical DNS is that, in `strict DNS`, envoy drains connections to any host which is not returned in the DNS query, while draining of existing connections does not happen in case of `logical DNS`.
+
+`Strict DNS` capability in envoy thus provides **DNS-aware persistent connections**
+
+> Should application clients implement strict DNS, the way it works in envoy?
+
+The answer to this question, in my opinion, is NO. The reason is again mentioned in envoy's documentation itself. This is what it says for `logical DNS`
+
+> This service discovery type is optimal for large scale web services that must be accessed via DNS. Such services typically use round robin DNS to return many different IP addresses. Typically a different result is returned for each query. If strict DNS were used in this scenario, Envoy would assume that the cluster’s members were changing during every resolution interval which would lead to draining connection pools, connection cycling, etc. Instead, with logical DNS, connections stay alive until they get cycled. 
+
+Strict DNS can be implemented in clients, only if, DNS starts sending the need for it in its responses through some mechanis. This can be a RFC btw :)
+
+#### The 421 (Misdirected Request) status code in http2
+
+A slightly related aspect is `421 (Misdirected Request)` status code in http2. [Section 9.1.2 of RFC 7540](https://tools.ietf.org/html/rfc7540#section-9.1.2) describes `421 (Misdirected Request)` as
 
 > The 421 (Misdirected Request) status code indicates that the request was directed at a server that is not able to produce a response. This can be sent by a server that is not configured to produce responses for the combination of scheme and authority that are included in the request URI. Clients receiving a 421 (Misdirected Request) response from a server MAY retry the request – whether the request method is idempotent or not – over a different connection.
 
-The 421 status code can be used to force clients to connect over a different connection, but this again puts the onus on the resource server to start sending 421 once it's out of rotation. I am not very sure if this is the right use of this status code and I haven't come across any implementations of this either. Also, is the client expected to terminate the existing connection if it receives a 421 is not clear to me. `golang` http2 client still doesn't support 421. Some discussions here: [https://github.com/golang/go/issues/18341](https://github.com/golang/go/issues/18341).
+The 421 status code can be used to force clients to connect over a different connection, but this again puts the onus on the resource server to start sending 421 once it's out of rotation. I am not very sure if this is the right use of this status code and I haven't come across any implementations of this either. Also, is the client expected to terminate the existing connection if it receives a 421 is again not clear to me. `golang` http2 client still doesn't support 421. Some discussions here: [https://github.com/golang/go/issues/18341](https://github.com/golang/go/issues/18341).
+
+#### But I would still want to handle this at my client.
+
+There is a partial solution available in some languages/frameworks which can help mitigate this if you still need to handle it at the client. The `ESTABLISHED` connections can be limited by time (as done by [akka-http](https://doc.akka.io/docs/akka-http/current/common/timeouts.html#connection-lifetime-timeout) for example) or they can be limited by number of requests (as done by [envoy](https://www.envoyproxy.io/docs/envoy/latest/api-v2/api/v2/cluster.proto) for example)
 
 #### Summary
 
 1. DNS aware persistent connectoons is a common topic raised at multiple places.
 2. There is no standard client-side implementation to handle this.
+3. Envoy's `strict DNS` pattern falls closer to a DNS-aware client for persistent connections, but it's not advisable to be used.
 3. The only available client-side solutions are to use time bound or number of requests bound persistent connections available in some languages or frameworks.
 4. The server is always in best position to decide if it needs to terminate existing connections or not and should ideally do it that way.
+
+**Your comments are welcome**
