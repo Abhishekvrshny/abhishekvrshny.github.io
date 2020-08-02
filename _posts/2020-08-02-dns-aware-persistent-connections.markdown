@@ -2,7 +2,7 @@
 layout: post
 title: DNS-aware Persistent Connections
 date: 2020-08-02 00:00:00
-description: How do clients handle persistent connections when DNS IPs change?
+description: How should clients handle persistent connections when DNS IPs change? This post covers various aspects ranging from http1/2 and load balancers to answer this question.
 absolute_image: >-
   http://user-images.githubusercontent.com/12811812/89064961-8777a680-d388-11ea-9145-d84c1b2149ff.png
 ---
