@@ -16,8 +16,8 @@ navigation:
     url: /index.html
   - title: /about
     url: /about
-#  - title: Contact
-#    url: /contact
+  - title: /tea
+    url: /tea
 
 social:
   github: Abhishekvrshny
