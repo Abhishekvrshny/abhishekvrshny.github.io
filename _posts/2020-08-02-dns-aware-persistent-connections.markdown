@@ -1,12 +1,13 @@
 ---
 layout: post
-title:  "DNS-aware Persistent Connections"
-date:   2020-08-02
+title: DNS-aware Persistent Connections
+date: 2020-08-02 00:00:00
 description: How do clients handle persistent connections when DNS IPs change?
-absolute_image: http://user-images.githubusercontent.com/12811812/89064961-8777a680-d388-11ea-9145-d84c1b2149ff.png
+absolute_image: >-
+  http://user-images.githubusercontent.com/12811812/89064961-8777a680-d388-11ea-9145-d84c1b2149ff.png
 ---
 
-There was an interesting discussion that came up recently. There was a problem faced to which **DNS-aware persistent http connections** seemed to be a probable solution. I can understand if you have never heard of such a concept before, probably because its not so common or probably it doesn't even exist! We'll find that out soon.
+An interesting discussion that came up recently. There was a problem faced to which **DNS-aware persistent http connections** seemed to be a probable solution. I can understand if you have never heard of such a concept before, probably because its not so common or probably it doesn't even exist\! We'll find that out soon.
 
 ![](https://user-images.githubusercontent.com/12811812/89064961-8777a680-d388-11ea-9145-d84c1b2149ff.png)
 
@@ -20,11 +21,11 @@ So, let me try to present a simplistic version of the problem. Let's assume ther
 
 Before I answer valid or not valid, let's see if this question has been raised elsewhere.
 
-1. **golang `net/http`**: There is a similar issue raised on golang's `net/http` package. [https://github.com/golang/go/issues/23427](https://github.com/golang/go/issues/23427)
-2. **`square/okhttp`**: Again similar issue with some discussions. [https://github.com/square/okhttp/issues/3374](https://github.com/square/okhttp/issues/3374)
-3. **`akka/akka-http`**: [https://github.com/akka/akka-http/issues/1226](https://github.com/akka/akka-http/issues/1226)
-4. **`pgbouncer/pgbouncer`**:A PostgreSQL connection pooler has similar issue reported. [https://github.com/pgbouncer/pgbouncer/issues/383](https://github.com/pgbouncer/pgbouncer/issues/383)
-5. **cURL**: A good discussion in `cURL`'s mailing list. [https://curl.haxx.se/mail/lib-2017-06/0021.html](https://curl.haxx.se/mail/lib-2017-06/0021.html)
+1. **golang `net/http`**\: There is a similar issue raised on golang's `net/http` package. [https://github.com/golang/go/issues/23427](https://github.com/golang/go/issues/23427)
+2. **`square/okhttp`**\: Again similar issue with some discussions. [https://github.com/square/okhttp/issues/3374](https://github.com/square/okhttp/issues/3374)
+3. **`akka/akka-http`**\: [https://github.com/akka/akka-http/issues/1226](https://github.com/akka/akka-http/issues/1226)
+4. **`pgbouncer/pgbouncer`**\:A PostgreSQL connection pooler has similar issue reported. [https://github.com/pgbouncer/pgbouncer/issues/383](https://github.com/pgbouncer/pgbouncer/issues/383)
+5. **cURL**\: A good discussion in `cURL`'s mailing list. [https://curl.haxx.se/mail/lib-2017-06/0021.html](https://curl.haxx.se/mail/lib-2017-06/0021.html)
 
 Going through the discussions on these threads and mailing lists, there are two things which are clear:
 
@@ -76,6 +77,7 @@ func main() {
 	<-ch
 }
 {% endhighlight %}
+
 Start this program, and we see it getting 200 OK.
 
 {% highlight bash %}
@@ -84,10 +86,13 @@ Start this program, and we see it getting 200 OK.
 2020/08/02 01:17:48 resp status: 200 OK
 2020/08/02 01:17:50 resp status: 200 OK
 {% endhighlight %}
+
 Now, let's update `/etc/hosts` to simulate a change in DNS.
+
 {% highlight bash %}
 127.0.0.1 api.razorpay.com
 {% endhighlight %}
+
 And you would notice that the code keeps running as is. Why? Because DNS resolution just happens once and a change in DNS entries has no impact on already established connections as expected.
 
 You would now say
@@ -96,7 +101,7 @@ You would now say
 
 #### The solution
 
-The solution to this problem, in my opinion, is simple. 
+The solution to this problem, in my opinion, is simple.
 
 The application or the client can do very little to solve this and it's the responsibility of the server to drain and terminate the connections to an IP if it wishes to recycle it. Terminating the connections would lead to the clients establishing a new connections by doing a fresh DNS lookup, in which case it would get the new set of IPs. The server should wait for DNS to be propagated before terminating existing connections due to obvious reasons.
 
@@ -113,7 +118,7 @@ There is a partial solution available in some languages/frameworks which can hel
 
 > So far so good, but what if the resolved IP is that of a load balancer? How would load balancer terminate the connections?
 
-The answer still remains the same. You can have any number of proxies in between your client and the resource server, for eg, load balancers, k8s ingress controllers etc. It's always the responsibility of the resource server or any layer above it to terminate connections to force re-connects. The resource server terminating the connection is propagated to the clients because there always exists one to one mapping of connections from clients to load balancers and load balancers to resource servers in http1. 
+The answer still remains the same. You can have any number of proxies in between your client and the resource server, for eg, load balancers, k8s ingress controllers etc. It's always the responsibility of the resource server or any layer above it to terminate connections to force re-connects. The resource server terminating the connection is propagated to the clients because there always exists one to one mapping of connections from clients to load balancers and load balancers to resource servers in http1.
 
 > What happens in case of http2?
 
@@ -123,7 +128,7 @@ The case of http2 is again not very different and it's still the responsibility 
 
 [Section 9.1.2 of RFC 7540](https://tools.ietf.org/html/rfc7540#section-9.1.2) describes 421 (Misdirected Request) as
 
-> The 421 (Misdirected Request) status code indicates that the request was directed at a server that is not able to produce a response. This can be sent by a server that is not configured to produce responses for the combination of scheme and authority that are included in the request URI. Clients receiving a 421 (Misdirected Request) response from a server MAY retry the request -- whether the request method is idempotent or not -- over a different connection.
+> The 421 (Misdirected Request) status code indicates that the request was directed at a server that is not able to produce a response. This can be sent by a server that is not configured to produce responses for the combination of scheme and authority that are included in the request URI. Clients receiving a 421 (Misdirected Request) response from a server MAY retry the request – whether the request method is idempotent or not – over a different connection.
 
 The 421 status code can be used to force clients to connect over a different connection, but this again puts the onus on the resource server to start sending 421 once it's out of rotation. I am not very sure if this is the right use of this status code and I haven't come across any implementations of this either. Also, is the client expected to terminate the existing connection if it receives a 421 is not clear to me. `golang` http2 client still doesn't support 421. Some discussions here: [https://github.com/golang/go/issues/18341](https://github.com/golang/go/issues/18341).
 
@@ -132,10 +137,4 @@ The 421 status code can be used to force clients to connect over a different con
 1. DNS aware persistent connectoons is a common topic raised at multiple places.
 2. There is no standard client-side implementation to handle this.
 3. The only available client-side solutions are to use time bound or number of requests bound persistent connections available in some languages or frameworks.
-4. The server is always in best position to decide if it needs to terminate existing connections or not and should ideally do it that way.   
-
-
-
-
-
-
+4. The server is always in best position to decide if it needs to terminate existing connections or not and should ideally do it that way.
