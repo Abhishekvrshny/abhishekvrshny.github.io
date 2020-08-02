@@ -7,7 +7,7 @@ absolute_image: >-
   http://user-images.githubusercontent.com/12811812/89064961-8777a680-d388-11ea-9145-d84c1b2149ff.png
 ---
 
-An interesting discussion that came up recently. There was a problem faced to which **DNS-aware persistent http connections** seemed to be a probable solution. I can understand if you have never heard of such a concept before, probably because its not so common or probably it doesn't even exist\! We'll find that out soon.
+This post is about an interesting discussion that came up recently. There was a problem faced to which **DNS-aware persistent http connections** seemed to be a probable solution. I can understand if you have never heard of such a concept before, probably because its not so common or probably it doesn't even exist\! We'll find that out soon.
 
 ![](https://user-images.githubusercontent.com/12811812/89064961-8777a680-d388-11ea-9145-d84c1b2149ff.png)
 
@@ -103,7 +103,7 @@ You would now say
 
 The solution to this problem, in my opinion, is simple.
 
-The application or the client can do very little to solve this and it's the responsibility of the server to drain and terminate the connections to an IP if it wishes to recycle it. Terminating the connections would lead to the clients establishing a new connections by doing a fresh DNS lookup, in which case it would get the new set of IPs. The server should wait for DNS to be propagated before terminating existing connections due to obvious reasons.
+The application or the client can do very little to solve this and it's the responsibility of the server to drain and terminate the connections for an IP if it wishes to recycle it. Terminating the connections would lead to the clients establishing a new connections by doing fresh DNS lookups, in which case they would get the new set of IPs. The server should wait for DNS to be propagated before terminating existing connections due to obvious reasons.
 
 #### Why is this a responsibilty of the server to terminate connections?
 
@@ -133,13 +133,13 @@ Envoy supports two modes of DNS based [service discovery](https://www.envoyproxy
 
 `Strict DNS` capability in envoy thus provides **DNS-aware persistent connections**
 
-> Should application clients implement strict DNS, the way it works in envoy?
+> Should application clients then implement strict DNS, the way it works in envoy?
 
 The answer to this question, in my opinion, is NO. The reason is again mentioned in envoy's documentation itself. This is what it says for `logical DNS`
 
 > This service discovery type is optimal for large scale web services that must be accessed via DNS. Such services typically use round robin DNS to return many different IP addresses. Typically a different result is returned for each query. If strict DNS were used in this scenario, Envoy would assume that the cluster’s members were changing during every resolution interval which would lead to draining connection pools, connection cycling, etc. Instead, with logical DNS, connections stay alive until they get cycled. 
 
-Strict DNS can be implemented in clients, only if, DNS starts sending the need for it in its responses through some mechanis. This can be a RFC btw :)
+Strict DNS can be implemented in clients, only if, DNS starts sending the need for it in its responses through some mechanics. This can be a RFC btw :)
 
 #### The 421 (Misdirected Request) status code in http2
 
