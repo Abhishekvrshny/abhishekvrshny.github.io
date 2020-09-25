@@ -40,7 +40,7 @@ Before talking about the solution we employed, let's look at how the Google pape
 >
 
 ### The Solution
-While the Google paper talks about Hedged Requests primarily in the context of read requests, we used it in the write flow and piggybacked on the database and the cron job setup, which was already in place, to write the request to the database if SQS push doesn't succeed within the defined timeout period. One of the drawbacks of this approach is that it can lead to duplicate deliveries, but that was acceptable as we anyway promise at [least once delivery semantics](https://razorpay.com/docs/webhooks/#idempotency). 
+While the Google paper talks about Hedged Requests primarily in the context of read requests, we used it in the write flow and piggybacked on the database and the cron job setup, which was already in place, to write the request to the database if SQS push doesn't succeed within the defined timeout period. One of the drawbacks of this approach is that it can lead to duplicate deliveries, but that was acceptable as we anyway promise [at least once delivery semantics](https://razorpay.com/docs/webhooks/#idempotency). 
 
 ![Hedged Requests](https://user-images.githubusercontent.com/12811812/94265735-af355600-ff56-11ea-8a58-da44799b3610.png)
 
@@ -48,6 +48,7 @@ While the Google paper talks about Hedged Requests primarily in the context of r
 The implementation involved `Enqueue`ing the message in a different thread or goroutine with a strict timeout something similar to this:
 {% highlight go %}
 func (bq BaseQueue) enqueueWithSoftTimeout(msg string, timeoutInMs int, q Queue) (string, error) {
+
   // the channel holding the result
 	c := make(chan struct {
 		id  string
@@ -77,7 +78,9 @@ func (bq BaseQueue) enqueueWithSoftTimeout(msg string, timeoutInMs int, q Queue)
 {% endhighlight %}
 
 ### Why not use http `transport` timeouts?
-Now, this is an interesting question and an alternate approach to solve this problem could have been to use [http transport](https://golang.org/pkg/net/http/#Transport) timeouts like [Dialer Timeout](https://golang.org/pkg/net/#Dialer.Timeout), [TLS Handshake Timeout](https://golang.org/pkg/net/http/#Transport.TLSHandshakeTimeout) and ResponseHeaderTimeout. Before we talk about the reasons for not using those, [here](https://blog.cloudflare.com/the-complete-guide-to-golang-net-http-timeouts/) is a good primer on `net/http` timeouts in golang. 
+Now, this is an interesting question and an alternate approach to solve this problem could have been to use [http transport](https://golang.org/pkg/net/http/#Transport) timeouts like [Dialer Timeout](https://golang.org/pkg/net/#Dialer.Timeout), [TLS Handshake Timeout](https://golang.org/pkg/net/http/#Transport.TLSHandshakeTimeout) and ResponseHeaderTimeout. 
+
+[Here](https://blog.cloudflare.com/the-complete-guide-to-golang-net-http-timeouts/) is a good primer on `net/http` timeouts in golang. 
 
 ![Client Timeouts](https://blog.cloudflare.com/content/images/2016/06/Timeouts-002.png)
 
