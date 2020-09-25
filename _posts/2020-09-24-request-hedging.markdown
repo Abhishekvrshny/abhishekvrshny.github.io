@@ -42,6 +42,8 @@ Before talking about the solution we employed, let's look at how the Google pape
 ### The Solution
 While the Google paper talks about Hedged Requests primarily in the context of read requests, we used it in the write flow and piggybacked on the database and the cron job setup, which was already in place, to write the request to the database if SQS push doesn't succeed within the defined timeout period. One of the drawbacks of this approach is that it can lead to duplicate deliveries, but that was acceptable as we anyway promise [at least once delivery semantics](https://razorpay.com/docs/webhooks/#idempotency). 
 
+*Please do note that hedging writes is **not** a good idea if you don't have at least once delivery semantics or if your writes are not idempotent.*
+
 ![Hedged Requests](https://user-images.githubusercontent.com/12811812/94265735-af355600-ff56-11ea-8a58-da44799b3610.png)
 
 ### The Implementation
