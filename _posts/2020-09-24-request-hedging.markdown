@@ -3,7 +3,7 @@ layout: post
 title:  "Request Hedging"
 date:   2020-09-24
 description: This post is on tail latencies and how request hedging can help curtail those. I also present one of my experiences of implementing it to combat the "tail at scale".
-absolute_image: 
+absolute_image: https://user-images.githubusercontent.com/12811812/94265735-af355600-ff56-11ea-8a58-da44799b3610.png
 ---
 
 
