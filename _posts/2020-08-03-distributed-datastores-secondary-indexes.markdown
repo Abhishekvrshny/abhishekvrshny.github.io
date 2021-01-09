@@ -2,7 +2,7 @@
 layout: post
 title: Distributed Datastores and Secondary Indexes
 date: 2021-01-09 00:00:00
-description: This post talks about various strategies that distributed datastores use to provide the capabilty of secondary indexes.
+description: This is a short post on various strategies that distributed datastores use to provide the capabiltiy of secondary indexes.
 absolute_image: http://pld.cs.luc.edu/database/images/mysql_index.png
 ---
 
