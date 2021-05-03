@@ -114,14 +114,7 @@ This is because:
 
 #### Where do load balancers fit into the picture here?
 
-With load balancers, there can be 2 scenarios:
-
-1. The application resolves to 2 different load balancers through DNS. 
-2. The application just connects to 1 load balancer but the load balancer in turn uses DNS to resolve to multiple resource servers.
-
-The solution still remains the same in both the scenarios. You can have any number of proxies in between your client and the resource server, for eg, load balancers, k8s ingress controllers etc. It's always the responsibility of the resource server or any layer above it to terminate connections to force re-connects. The resource server terminating the connection is propagated to the clients because there always exists one to one mapping of connections from clients to load balancers and load balancers to resource servers in http1.
-
-In scenario 1, the decision to drain and terminate connections can be taken by all the resource servers or the load balancer itself.
+The problem becomes more acute when we have load balancers or reverse proxies in between. A resource server wanting to get out of rotation can terminate existing http connections to it but the load balancer or the reverse proxy would return a `502 Bad Gateway` to the client in such a scenario. Although new requests would not land up in this server if its marked unhealthy and the healthcheck removes it from the load balancers set of backend targets, but would the existing connections be pro-actively terminated too in this case? I dont think all load balancers or reverse proxies do that.
 
 #### What about http2?
 
@@ -141,6 +134,8 @@ The answer to this question, in my opinion, is NO. The reason is again mentioned
 
 Strict DNS can be implemented in clients, only if, DNS starts sending the need for it in its responses through some mechanics. This can be a RFC btw :)
 
+**UPDATE**: There is actually an RFC for [DNS Push Notifications](https://tools.ietf.org/html/rfc8765)
+
 #### The 421 (Misdirected Request) status code in http2
 
 A slightly related aspect is `421 (Misdirected Request)` status code in http2. [Section 9.1.2 of RFC 7540](https://tools.ietf.org/html/rfc7540#section-9.1.2) describes `421 (Misdirected Request)` as
@@ -158,7 +153,6 @@ There is a partial solution available in some languages/frameworks which can hel
 1. DNS aware persistent connectoons is a common topic raised at multiple places.
 2. There is no standard client-side implementation to handle this.
 3. Envoy's `strict DNS` pattern falls closer to a DNS-aware client for persistent connections, but it's not advisable to be used.
-3. The only available client-side solutions are to use time bound or number of requests bound persistent connections available in some languages or frameworks.
-4. The server is always in best position to decide if it needs to terminate existing connections or not and should ideally do it that way.
+4. The only available client-side solutions are to use time bound or number of requests bound persistent connections available in some languages or frameworks.
 
 **Your comments are welcome**
