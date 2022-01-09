@@ -73,7 +73,7 @@ Similarly, if you choose to provision a replica or a slave from a restored volum
 Incremental snapshots with lazy loading while restoring is a necessary evil IMO, to reduce the RPO and RTO, but the performance impact which comes with it cannot be ignored. It's important to be aware of these gotchas, especially with large databases. More importantly, AWS provides no visibility into the hydration status of a volume, in terms of the percentage of blocks hydrated or the rate at which hydration is happening etc.
 
 #### References
-1. https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_RestoreFromSnapshot.html
-2. https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSSnapshots.html
-3. https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.html
-4. https://aws.amazon.com/blogs/aws/new-amazon-ebs-fast-snapshot-restore-fsr/
+1. [https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_RestoreFromSnapshot.html](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_RestoreFromSnapshot.html)
+2. [https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSSnapshots.html](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSSnapshots.html)
+3. [https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.html](https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.html)
+4. [https://aws.amazon.com/blogs/aws/new-amazon-ebs-fast-snapshot-restore-fsr/](https://aws.amazon.com/blogs/aws/new-amazon-ebs-fast-snapshot-restore-fsr/)
