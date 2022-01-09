@@ -2,7 +2,7 @@
 layout: post
 title: Lazy loading of snapshot restores and its implications on database performance
 date: 2022-01-07 00:00:00
-description: This post talks about snapshot restores in AWS and how does it impact the performance of a database  
+description: This post talks about backups and snapshot restores in AWS and how does it impact the performance of a database  
 absolute_image: https://user-images.githubusercontent.com/12811812/148668376-52279ec9-2b17-4d5b-a3f2-c75eeb745799.png
 ---
 
@@ -70,7 +70,7 @@ Similarly, if you choose to provision a replica or a slave from a restored volum
 [FSR](https://aws.amazon.com/blogs/aws/new-amazon-ebs-fast-snapshot-restore-fsr/), again does not completely solve the problem, but only mitigates it to some extent by throwing more resources at the problem and proactively hydrating the volume instead of on-demand hydration. Multi TB database volumes would still take hours to completely hydrate with FSR.
 
 #### Summary
-Incremental snapshots with lazy loading while restoring is a necessary evil IMO, to reduce the RPO and RTO, but the performance impact which comes with it cannot be ignored. It's important to be aware of these gotchas, especially with large databases. More importantly, AWS provides no visibility into the hydration status of a volume, in terms of the percentage of blocks hydrated or the rate at which hydration is happening etc.
+Incremental snapshots with lazy loading while restoring is a necessary evil IMO, to reduce the RPO and RTO, but the performance impact which comes with it cannot be ignored. It's important to be aware of these gotchas, especially with large databases. More importantly, AWS provides no visibility into the hydration status of a volume, in terms of the percentage of blocks hydrated or the rate at which hydration is happening etc. which makes it worse.
 
 #### References
 1. [https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_RestoreFromSnapshot.html](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_RestoreFromSnapshot.html)
