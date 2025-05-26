@@ -150,18 +150,238 @@
             color: #8b949e;
         }
 
-        @media (max-width: 768px) {
+        /* Mobile First Responsive Design */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+            
             .terminal {
-                width: 95%;
-                margin: 20px;
+                width: 100%;
+                margin: 0;
+                min-height: calc(100vh - 40px);
             }
             
             .name {
-                font-size: 1.8em;
+                font-size: 1.6em;
+                line-height: 1.2;
+            }
+            
+            .title {
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+            
+            .terminal-content {
+                padding: 16px;
+            }
+            
+            .terminal-header {
+                padding: 10px 16px;
+            }
+            
+            .terminal-title {
+                font-size: 12px;
+            }
+            
+            .social-links {
+                gap: 8px;
+                margin-top: 20px;
+            }
+            
+            .social-link {
+                padding: 12px;
+                font-size: 14px;
+                border-radius: 6px;
+                min-height: 44px;
+            }
+            
+            .social-icon {
+                margin-right: 10px;
+                font-size: 1.1em;
+            }
+            
+            .line {
+                margin: 6px 0;
+                word-break: break-word;
+            }
+            
+            .command {
+                word-break: break-all;
+            }
+        }
+
+        /* Tablet Portrait */
+        @media (min-width: 481px) and (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            .terminal {
+                width: 100%;
+                max-width: 500px;
+            }
+            
+            .name {
+                font-size: 1.9em;
             }
             
             .terminal-content {
                 padding: 20px;
+            }
+            
+            .social-link {
+                padding: 10px 12px;
+                font-size: 15px;
+                min-height: 44px;
+            }
+        }
+
+        /* Tablet Landscape and Small Desktop */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .terminal {
+                width: 80%;
+                max-width: 650px;
+            }
+            
+            .name {
+                font-size: 2.1em;
+            }
+        }
+
+        /* Large Desktop */
+        @media (min-width: 1025px) {
+            .terminal {
+                max-width: 700px;
+            }
+            
+            .name {
+                font-size: 2.4em;
+            }
+            
+            .terminal-content {
+                padding: 28px;
+            }
+        }
+
+        /* Ultra-wide screens */
+        @media (min-width: 1440px) {
+            .terminal {
+                max-width: 800px;
+            }
+            
+            .name {
+                font-size: 2.6em;
+            }
+        }
+
+        /* Landscape orientation on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            body {
+                align-items: flex-start;
+                padding-top: 10px;
+            }
+            
+            .terminal {
+                margin: 0;
+                width: 100%;
+                max-width: none;
+            }
+            
+            .terminal-content {
+                padding: 16px 20px;
+            }
+            
+            .name {
+                font-size: 1.7em;
+            }
+            
+            .social-links {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+                margin-top: 16px;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .social-link {
+                padding: 14px 12px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+            }
+            
+            .social-link:hover {
+                transform: none;
+            }
+            
+            .social-link:active {
+                background-color: #30363d;
+                transform: scale(0.98);
+            }
+            
+            .terminal-button {
+                width: 14px;
+                height: 14px;
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .terminal {
+                border-width: 0.5px;
+            }
+            
+            .terminal-header {
+                border-bottom-width: 0.5px;
+            }
+        }
+
+        /* Reduced motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            .cursor {
+                animation: none;
+                opacity: 1;
+            }
+            
+            .social-link {
+                transition: none;
+            }
+            
+            .social-link:hover {
+                transform: none;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+            
+            .terminal {
+                border: 2px solid black;
+                box-shadow: none;
+                background: white;
+            }
+            
+            .terminal-header {
+                background: #f0f0f0;
+                border-bottom: 1px solid black;
+            }
+            
+            .social-link {
+                color: black;
+                text-decoration: underline;
+            }
+            
+            .cursor {
+                display: none;
             }
         }
 
