@@ -73,14 +73,19 @@
         .prompt {
             color: #7c3aed;
             margin-right: 8px;
+            font-weight: bold;
         }
 
         .command {
-            color: #58a6ff;
+            color: #a5f3fc;
+            font-weight: 500;
         }
 
         .output {
             margin: 16px 0;
+            color: #f0f6fc;
+            padding-left: 16px;
+            border-left: 2px solid #58a6ff;
         }
 
         .name {
@@ -108,18 +113,20 @@
             display: flex;
             align-items: center;
             text-decoration: none;
-            color: #58a6ff;
+            color: #79c0ff;
             transition: all 0.3s ease;
             padding: 8px 12px;
             border-radius: 4px;
             border: 1px solid transparent;
+            background-color: rgba(33, 38, 45, 0.3);
         }
 
         .social-link:hover {
-            background-color: #21262d;
-            border-color: #30363d;
+            background-color: #30363d;
+            border-color: #58a6ff;
             transform: translateX(4px);
-            color: #79c0ff;
+            color: #f0f6fc;
+            box-shadow: 0 0 8px rgba(88, 166, 255, 0.3);
         }
 
         .social-icon {
@@ -148,7 +155,9 @@
         }
 
         .comment {
-            color: #8b949e;
+            color: #f85149;
+            font-style: italic;
+            font-weight: 400;
         }
 
         /* Mobile First Responsive Design */
@@ -532,6 +541,23 @@
                     <a href="https://x.com/Abhishekvrshny" target="_blank" class="social-link">
                         <span class="social-icon">🐦</span>
                         <span>x.com/Abhishekvrshny</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="line" style="margin-top: 24px;">
+                <span class="prompt">$</span>
+                <span class="command">ls -la ~/tools/</span>
+            </div>
+            <div class="output">
+                <div class="social-links">
+                    <a href="https://json.varlog.co.in/" target="_blank" class="social-link">
+                        <span class="social-icon">🔧</span>
+                        <span>json.varlog.co.in - JSON Formatter & Validator</span>
+                    </a>
+                    <a href="https://notes.varlog.co.in/" target="_blank" class="social-link">
+                        <span class="social-icon">📋</span>
+                        <span>notes.varlog.co.in - Quick Notes & Snippets</span>
                     </a>
                 </div>
             </div>
