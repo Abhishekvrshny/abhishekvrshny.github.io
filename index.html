@@ -32,6 +32,7 @@
             max-width: 600px;
             padding: 0;
             position: relative;
+            margin: 0 auto;
         }
 
         .terminal-header {
@@ -153,63 +154,78 @@
         /* Mobile First Responsive Design */
         @media (max-width: 480px) {
             body {
-                padding: 10px;
+                padding: 8px;
                 align-items: flex-start;
-                padding-top: 20px;
+                padding-top: 16px;
             }
             
             .terminal {
                 width: 100%;
                 margin: 0;
-                min-height: calc(100vh - 40px);
+                min-height: calc(100vh - 32px);
+                border-radius: 6px;
             }
             
             .name {
-                font-size: 1.6em;
+                font-size: 1.5em;
                 line-height: 1.2;
+                word-wrap: break-word;
             }
             
             .title {
-                font-size: 1em;
-                margin-bottom: 20px;
+                font-size: 0.95em;
+                margin-bottom: 18px;
+                word-wrap: break-word;
             }
             
             .terminal-content {
-                padding: 16px;
+                padding: 14px;
             }
             
             .terminal-header {
-                padding: 10px 16px;
+                padding: 8px 14px;
+                border-radius: 6px 6px 0 0;
             }
             
             .terminal-title {
-                font-size: 12px;
+                font-size: 11px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
             }
             
             .social-links {
-                gap: 8px;
-                margin-top: 20px;
+                gap: 6px;
+                margin-top: 18px;
             }
             
             .social-link {
-                padding: 12px;
-                font-size: 14px;
-                border-radius: 6px;
-                min-height: 44px;
+                padding: 14px 12px;
+                font-size: 13px;
+                border-radius: 8px;
+                min-height: 48px;
+                justify-content: flex-start;
             }
             
             .social-icon {
-                margin-right: 10px;
-                font-size: 1.1em;
+                margin-right: 12px;
+                font-size: 1.2em;
+                flex-shrink: 0;
             }
             
             .line {
-                margin: 6px 0;
+                margin: 5px 0;
                 word-break: break-word;
+                overflow-wrap: break-word;
             }
             
             .command {
                 word-break: break-all;
+                overflow-wrap: break-word;
+            }
+            
+            .output {
+                margin: 12px 0;
             }
         }
 
@@ -399,6 +415,80 @@
             opacity: 0.1;
             z-index: -1;
         }
+
+        /* Very small screens (iPhone SE, older Android) */
+        @media (max-width: 375px) {
+            .terminal {
+                border-radius: 4px;
+            }
+            
+            .terminal-content {
+                padding: 12px;
+            }
+            
+            .name {
+                font-size: 1.4em;
+            }
+            
+            .title {
+                font-size: 0.9em;
+            }
+            
+            .social-link {
+                padding: 12px 10px;
+                font-size: 12px;
+                min-height: 44px;
+            }
+            
+            .social-icon {
+                margin-right: 10px;
+                font-size: 1.1em;
+            }
+        }
+
+        /* Foldable devices and very wide screens */
+        @media (min-width: 1920px) {
+            .terminal {
+                max-width: 900px;
+            }
+            
+            .name {
+                font-size: 2.8em;
+            }
+            
+            .terminal-content {
+                padding: 32px;
+            }
+        }
+
+
+        /* Safe area support for devices with notches */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: max(8px, env(safe-area-inset-left));
+                padding-right: max(8px, env(safe-area-inset-right));
+                padding-top: max(16px, env(safe-area-inset-top));
+                padding-bottom: max(8px, env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Container queries support for modern browsers */
+        @supports (container-type: inline-size) {
+            .terminal {
+                container-type: inline-size;
+            }
+            
+            @container (max-width: 400px) {
+                .social-links {
+                    gap: 4px;
+                }
+                
+                .social-link {
+                    padding: 10px 8px;
+                    font-size: 12px;
+                }
+            }
+        }
     </style>
 </head>
 <body>
@@ -423,7 +513,7 @@
             
             <div class="line">
                 <span class="prompt">$</span>
-                <span class="command">cat social_links.txt</span>
+                <span class="command">cat /var/log/social_links.txt</span>
             </div>
             <div class="output">
                 <div class="social-links">
@@ -448,10 +538,10 @@
             
             <div class="line" style="margin-top: 24px;">
                 <span class="prompt">$</span>
-                <span class="command">echo "Building the future, one line at a time"</span>
+                <span class="command">tail -f /var/log/journey.log</span>
             </div>
             <div class="output">
-                <span class="comment"># Building the future, one line at a time</span>
+                <span class="comment"># Logging my journey through code and innovation...</span>
             </div>
             
             <div class="line">
